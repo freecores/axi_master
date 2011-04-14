@@ -27,11 +27,6 @@
 ////                                                             ////
 /////////////////////////////////////////////////////////////////////
 
-OUTFILE PREFIX.v
-
-INCLUDE def_axi_master.txt
-
-
 //////////////////////////////////////
 //
 // General:
@@ -64,6 +59,18 @@ INCLUDE def_axi_master.txt
 //   Parameters: master_num - number of internal master
 //               addr  - address
 //               rdata - return read data
+//
+// check_single(input master_num, input addr, input expected)
+//   Description: read a single AXI burst and gives an error if the data read does not match expected
+//   Parameters: master_num - number of internal master
+//               addr  - address
+//               expected - expected read data
+//
+// write_and_check_single(input master_num, input addr, input data)
+//   Description: write a single AXI burst read it back and compare the write and read data
+//   Parameters: master_num - number of internal master
+//               addr  - address
+//               data - data to write and expect on read
 //
 // insert_wr_cmd(input master_num, input addr, input len, input size)
 //   Description: add an AXI write burst to command FIFO
@@ -101,14 +108,18 @@ INCLUDE def_axi_master.txt
 //  Parameters:
 //  
 //    For random testing: (changing these values automatically update interanl masters)
-//      len_min  - minimum burst LEN (length)
-//      len_max  - maximum burst LEN (length)
-//      size_min - minimum burst SIZE (length)
-//      size_max - maximum burst SIZE (length)
+//      len_min  - minimum burst AXI LEN (length)
+//      len_max  - maximum burst AXI LEN (length)
+//      size_min - minimum burst AXI SIZE (width)
+//      size_max - maximum burst AXI SIZE (width)
 //      addr_min - minimum address (in bytes)
 //      addr_max - maximum address (in bytes)
 //  
 //////////////////////////////////////
+
+OUTFILE PREFIX.v
+
+INCLUDE def_axi_master.txt
 
   
 ITER IX ID_NUM
@@ -229,6 +240,30 @@ module PREFIX(PORTS);
          check_master_num("read_single", master_num);
          case (master_num)
            IX : PREFIX_singleIX.read_single(addr, rdata);
+         endcase
+      end
+   endtask
+
+   task check_single;
+      input [31:0] master_num;
+      input [ADDR_BITS-1:0]  addr;
+      input [DATA_BITS-1:0]  expected;
+      begin
+         check_master_num("check_single", master_num);
+         case (master_num)
+           IX : PREFIX_singleIX.check_single(addr, expected);
+         endcase
+      end
+   endtask
+
+   task write_and_check_single;
+      input [31:0] master_num;
+      input [ADDR_BITS-1:0]  addr;
+      input [DATA_BITS-1:0]  data;
+      begin
+         check_master_num("write_and_check_single", master_num);
+         case (master_num)
+           IX : PREFIX_singleIX.write_and_check_single(addr, data);
          endcase
       end
    endtask

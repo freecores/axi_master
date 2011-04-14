@@ -393,7 +393,7 @@ module PREFIX_single(PORTS);
               wdata_cnt = valid_cnt+(addr[DATA_LOG-1:0]/bytes);
               data_cnt  = ((wdata_cnt)/(DATA_BITS/(bytes*8))) * (DATA_BITS/8);
               add_data  = {DATA_BITS/8{data_cnt}};
-              next_data = base_data + add_data;
+              next_data = (use_addr_base ? addr : base_data) + add_data;
               insert_wr_data(next_data);
               valid_cnt = valid_cnt+1;
            end
@@ -442,7 +442,7 @@ module PREFIX_single(PORTS);
               wdata_cnt = valid_cnt+(addr[DATA_LOG-1:0]/bytes);
               data_cnt  = ((wdata_cnt)/(DATA_BITS/(bytes*8))) * (DATA_BITS/8);
               add_data  = {DATA_BITS/8{data_cnt}};
-              next_data = base_data + add_data;
+              next_data = (use_addr_base ? addr : base_data) + add_data;
               next_addr = addr + (bytes * valid_cnt);
               strb = (1 << (bytes*8)) - 1;
               mask = strb << (next_addr[DATA_LOG-1:0]*8);
@@ -612,6 +612,29 @@ module PREFIX_single(PORTS);
       reg [1:0] resp;
       begin
          read_single_ack(addr, rdata, resp);
+      end
+   endtask
+         
+   task check_single;
+      input [ADDR_BITS-1:0]  addr;
+      input [DATA_BITS-1:0]  expected;
+      
+      reg [1:0] resp;
+      reg [DATA_BITS-1:0] rdata;  
+      begin
+         read_single_ack(addr, rdata, resp);
+         if (rdata !== expected)
+           $display("MASTER%0d: CHK_SINGLE_ERROR: Address: 0x%0h, Expected: 0x%0h, Received: 0x%0h.\tTime: %0d ns.", MASTER_NUM, addr, expected, rdata, $time);
+      end
+   endtask
+               
+   task write_and_check_single;
+      input [ADDR_BITS-1:0]  addr;
+      input [DATA_BITS-1:0]  data;
+      
+      begin
+         write_single(addr, data);
+         check_single(addr, data);
       end
    endtask
          
