@@ -35,6 +35,7 @@ ITER SX
 LOOP MX
 ITER MMX_IDX
 ENDLOOP MX
+
   
 module PREFIX_ic_registry_resp(PORTS);
    
@@ -43,17 +44,17 @@ module PREFIX_ic_registry_resp(PORTS);
 
    port 			    MMX_AGROUP_IC_AXI_CMD;
    
-   input [ID_BITS-1:0] 	SSX_ID;
+   input [ID_BITS-1:0]              SSX_ID;
    input 			    SSX_VALID; 
    input 			    SSX_READY; 
    input 			    SSX_LAST; 
-   output [MSTR_BITS-1:0] SSX_MSTR;
+   output [MSTR_BITS-1:0]           SSX_MSTR;
    output 			    SSX_OK;
 
    
    
    wire 			    Amatch_MMX_IDMMX_IDX;
-   wire 			    match_MMX_IDMMX_IDX;
+   wire 			    match_SSX_MMX_IDMMX_IDX;
    wire 			    no_Amatch_MMX;
    
    wire 			    cmd_push_MMX;
@@ -80,7 +81,7 @@ ENDLOOP MX
    
    assign 			    Amatch_MMX_IDMMX_IDX = MMX_AID == ID_MMX_IDMMX_IDX;
    
-   assign 			    match_MMX_IDMMX_IDX  = SSX_ID == ID_MMX_IDMMX_IDX;
+   assign 			    match_SSX_MMX_IDMMX_IDX = SSX_ID == ID_MMX_IDMMX_IDX;
 
 		   
    assign 			    cmd_push_MMX           = MMX_AVALID & MMX_AREADY;
@@ -88,7 +89,7 @@ ENDLOOP MX
    assign 			    cmd_pop_SSX            = SSX_VALID & SSX_READY & SSX_LAST;
    
    LOOP MX
-     assign 			    cmd_pop_MMX_IDMMX_IDX = CONCAT((cmd_pop_SSX & (SSX_ID == ID_MMX_IDMMX_IDX)) |);
+     assign 			    cmd_pop_MMX_IDMMX_IDX = CONCAT((cmd_pop_SSX & match_SSX_MMX_IDMMX_IDX) |);
    ENDLOOP MX
    
 				    
