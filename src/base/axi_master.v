@@ -103,7 +103,10 @@
 //   Parameters: master_num - number of internal master
 //               burst_num - total number of bursts to check
 //  
-
+// insert_rand(input burst_num)
+//   Description: disperces burst_num between internal masters and calls insert_rand_chk for each master
+//   Parameters:  burst_num - total number of bursts to check (combined)
+//
 //  
 //  Parameters:
 //  
@@ -125,6 +128,8 @@ INCLUDE def_axi_master.txt
 ITER IX ID_NUM
 module PREFIX(PORTS);
 
+`include "prgen_rand.v"
+   
    input 			       clk;
    input                               reset;
    
@@ -163,6 +168,7 @@ module PREFIX(PORTS);
                    .idle(idle_IX),
                    .scrbrd_empty(scrbrd_empty_IX)
                    );
+   
    ENDLOOP IX
 
      IFDEF TRUE(ID_NUM==1)
@@ -172,11 +178,17 @@ module PREFIX(PORTS);
    
      ELSE TRUE(ID_NUM==1)
 
-   CREATE ic.v DEFCMD(SWAP.GLOBAL PARENT PREFIX) DEFCMD(SWAP.GLOBAL MASTER_NUM ID_NUM) DEFCMD(SWAP.GLOBAL CONST(ID_BITS) ID_BITS) DEFCMD(SWAP.GLOBAL CONST(CMD_DEPTH) CMD_DEPTH) DEFCMD(SWAP.GLOBAL CONST(DATA_BITS) DATA_BITS) DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
+   CREATE ic.v \\
+DEFCMD(SWAP.GLOBAL PARENT PREFIX) \\
+DEFCMD(SWAP.GLOBAL MASTER_NUM ID_NUM) \\
+DEFCMD(SWAP.GLOBAL SLAVE_NUM 1) \\
+DEFCMD(SWAP.GLOBAL CONST(ID_BITS) ID_BITS) \\
+DEFCMD(SWAP.GLOBAL CONST(CMD_DEPTH) CMD_DEPTH) \\
+DEFCMD(SWAP.GLOBAL CONST(DATA_BITS) DATA_BITS) \\
+DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
    LOOP IX ID_NUM
      STOMP NEWLINE
-     DEFCMD(LOOP.GLOBAL MIX_IDX 1)
-     STOMP NEWLINE 
+     DEFCMD(LOOP.GLOBAL MIX_IDX 1) \\
      DEFCMD(SWAP.GLOBAL ID_MIX_ID0 IDIX_VAL)
    ENDLOOP IX
 
@@ -329,6 +341,24 @@ module PREFIX(PORTS);
       end
    endtask
 
+   task insert_rand;
+      input [31:0] burst_num;
+      
+      ITER IDX ID_NUM
+      reg [31:0] burst_numIDX;
+      integer remain;
+      begin
+         remain = burst_num;
+         LOOP IDX ID_NUM
+         if (remain > 0)
+           begin
+              burst_numIDX = rand(1, remain);
+              remain = remain - burst_numIDX;
+              insert_rand_chk(IDX, burst_numIDX);              
+           end
+         ENDLOOP IDX
+      end
+   endtask
    
 
 endmodule
