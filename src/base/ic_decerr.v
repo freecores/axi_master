@@ -51,11 +51,14 @@ module PREFIX_ic_decerr(PORTS);
    reg [ID_BITS-1:0] 		  RID;
    reg [1:0] 			  RRESP;
    reg 				  RVALID;
-   reg [4-1:0] 		  rvalid_cnt;
+   reg [4-1:0]                    rvalid_cnt;
    
 
+IFDEF TRUE (USER_BITS>0)
    assign 			  BUSER = 'd0;
    assign 			  RUSER = 'd0;
+ENDIF TRUE (USER_BITS>0)
+   
    assign 			  RDATA = {DATA_BITS{1'b0}};
 
 
