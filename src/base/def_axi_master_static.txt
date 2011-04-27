@@ -77,6 +77,7 @@ GROUP STUB_AXI joins {
 }
 
 GROUP AXI_MASTER_RAND is {
+   ahb_bursts   SON(DEFAULT 0)
    use_addr_base   SON(DEFAULT 0)
    len_min     SON(DEFAULT 0)
    len_max     SON(DEFAULT 15)

@@ -111,6 +111,7 @@
 //  Parameters:
 //  
 //    For random testing: (changing these values automatically update interanl masters)
+//      ahb_bursts - if set, bursts will only be of length 1, 4, 8 or 16.
 //      len_min  - minimum burst AXI LEN (length)
 //      len_max  - maximum burst AXI LEN (length)
 //      size_min - minimum burst AXI SIZE (width)

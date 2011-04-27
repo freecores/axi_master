@@ -324,7 +324,7 @@ module PREFIX_single(PORTS);
 
          if (rd_cmd_full) enable = 1; //start stub not started yet
          
-         wait ((!rd_cmd_full) & (!rd_resp_full));
+         #FFD; wait ((!rd_cmd_full) & (!rd_resp_full));
 	 @(negedge clk); #FFD; 
 	 rd_cmd_push  = 1;
 	 rd_resp_push = 1;
@@ -349,7 +349,7 @@ module PREFIX_single(PORTS);
 	 
          if (wr_cmd_full) enable = 1; //start stub not started yet
          
-         wait ((!wr_cmd_full) & (!wr_data_full));
+         #FFD; wait ((!wr_cmd_full) & (!wr_data_full));
 	 @(negedge clk); #FFD; 
 	 wr_cmd_push  = 1; 
 	 wr_data_push = 1;
@@ -365,7 +365,7 @@ module PREFIX_single(PORTS);
       begin
 	 wr_fifo_data_in  = wdata;
 	 
-         wait (!wr_fifo_full);
+         #FFD; wait (!wr_fifo_full);
 	 @(negedge clk); #FFD; 
 	 wr_fifo_push = 1; 
 	 @(posedge clk); #FFD;
@@ -412,7 +412,7 @@ module PREFIX_single(PORTS);
 	 scrbrd_data_in  = data;
 	 scrbrd_mask_in  = mask;
 	 
-         wait (!scrbrd_full);
+         #FFD; wait (!scrbrd_full);
 	 @(negedge clk); #FFD; 
 	 scrbrd_push = 1; 
 	 @(posedge clk); #FFD;
@@ -479,11 +479,24 @@ module PREFIX_single(PORTS);
       reg [ADDR_BITS-1:0]  addr;
       reg [LEN_BITS-1:0]   len;
       reg [SIZE_BITS-1:0]  size;
-      
+
       begin
+         if (DATA_BITS==32) size_max = 2'b10;
          len   = rand(len_min, len_max);
          size  = rand(size_min, size_max);
          addr  = rand_align(addr_min, addr_max, 1 << size);
+         
+         if (ahb_bursts)
+           begin
+              len   = 
+                      len[3] ? 15 : 
+                      len[2] ? 7 : 
+                      len[1] ? 3 : 0;
+              if (len > 0)
+                size = (DATA_BITS == 64) ? 2'b11 : 2'b10; //AHB bursts always full data
+
+              addr = align(addr, EXPR(DATA_BITS/8)*(len+1)); //address aligned to burst size
+           end
          insert_wr_rd_scrbrd(addr, len, size);
       end
    endtask
@@ -527,7 +540,7 @@ module PREFIX_single(PORTS);
       reg [DATA_BITS-1:0] rdata;
       reg [1:0] resp;
       begin
-         wait (!rd_fifo_empty);
+         #FFD; wait (!rd_fifo_empty);
          rdata = rd_fifo_data;
          resp = rd_fifo_resp;
          @(negedge clk); #FFD; 
@@ -546,7 +559,7 @@ module PREFIX_single(PORTS);
       reg [DATA_BITS-1:0] rdata;
       reg [DATA_BITS-1:0] mask;
       begin
-         wait (!scrbrd_empty);
+         #FFD; wait (!scrbrd_empty);
          addr = scrbrd_addr;
          rdata = scrbrd_data;
          mask = scrbrd_mask;
@@ -562,7 +575,7 @@ module PREFIX_single(PORTS);
 
       reg [1:0] resp;
       begin
-         wait (!wr_resp_empty);
+         #FFD; wait (!wr_resp_empty);
          resp = wr_resp_resp;
          @(negedge clk); #FFD; 
 	 wr_resp_pop = 1; 
