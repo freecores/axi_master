@@ -51,9 +51,14 @@ module PREFIX_ic_dec (PORTS);
    
    LOOP MX
      always @(MMX_AADDR or MMX_AIDOK)                       
-       begin                                                  
+       begin        
+IFDEF TRUE(SLAVE_NUM==1)              
+	  case (MMX_AIDOK)    
+	    1'b1 : MMX_ASLV = 'd0;  
+ELSE TRUE(SLAVE_NUM==1)                                          
 	  case ({MMX_AIDOK, MMX_AADDR[DEC_MSB:DEC_LSB]})    
 	    {1'b1, BIN(SX SLV_BITS)} : MMX_ASLV = 'dSX;  
+ENDIF TRUE(SLAVE_NUM==1)   
             default : MMX_ASLV = 'dSERR;                     
 	  endcase                                             
        end                                                    
