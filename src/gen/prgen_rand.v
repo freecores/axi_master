@@ -27,6 +27,8 @@
 ////                                                             ////
 /////////////////////////////////////////////////////////////////////
 
+OUTFILE prgen_rand.v
+  
 function integer rand_chance;
       input [31:0] chance_true;
 
