@@ -31,18 +31,18 @@ INCLUDE def_axi_master_static.txt
 
 SWAP.GLOBAL #FFD #1                 ##Flip-Flop simulation delay
 
-SWAP PREFIX      axi_master         ##prefix for all module and file names
+SWAP.USER PREFIX      axi_master         ##prefix for all module and file names
   
-SWAP ID_BITS     4                  ##AXI ID bits
-SWAP ADDR_BITS   32                 ##AXI address bits
-SWAP DATA_BITS   64                 ##AXI data bits
-SWAP LEN_BITS    4                  ##AXI LEN bits
-SWAP SIZE_BITS   2                  ##AXI SIZE bits
+SWAP.USER ID_BITS     4                  ##AXI ID bits
+SWAP.USER ADDR_BITS   32                 ##AXI address bits
+SWAP.USER DATA_BITS   64                 ##AXI data bits
+SWAP.USER LEN_BITS    4                  ##AXI LEN bits
+SWAP.USER SIZE_BITS   2                  ##AXI SIZE bits
 
-SWAP CMD_DEPTH   4                  ##AXI command depth for read and write
+SWAP.USER CMD_DEPTH   4                  ##AXI command depth for read and write
 
-SWAP ID_NUM      3                  ##Number of IDs (internal masters)
-SWAP ID0_VAL     ID_BITS'b0011      ##AXI ID0
-SWAP ID1_VAL     ID_BITS'b0010      ##AXI ID1
-SWAP ID2_VAL     ID_BITS'b1010      ##AXI ID2
+SWAP.USER ID_NUM      3                  ##Number of IDs (internal masters)
+SWAP.USER ID0_VAL     'b0011             ##AXI ID0
+SWAP.USER ID1_VAL     'b0010             ##AXI ID1
+SWAP.USER ID2_VAL     'b1010             ##AXI ID2
 
