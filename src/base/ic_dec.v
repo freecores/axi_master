@@ -32,10 +32,6 @@ OUTFILE PREFIX_ic_dec.v
 ITER MX   
 ITER SX   
 
-LOOP MX
-ITER MMX_IDX
-ENDLOOP MX
-  
 module PREFIX_ic_dec (PORTS);
 
    input [ADDR_BITS-1:0] 		      MMX_AADDR;
@@ -49,31 +45,31 @@ module PREFIX_ic_dec (PORTS);
    reg [SLV_BITS-1:0] 			      MMX_ASLV;
    reg 					      MMX_AIDOK;
    
-   LOOP MX
+LOOP MX
      always @(MMX_AADDR or MMX_AIDOK)                       
        begin        
 IFDEF TRUE(SLAVE_NUM==1)              
 	  case (MMX_AIDOK)    
-	    1'b1 : MMX_ASLV = 'd0;  
+	    1'b1 : MMX_ASLV = SLV_BITS'd0;  
 ELSE TRUE(SLAVE_NUM==1)                                          
 	  case ({MMX_AIDOK, MMX_AADDR[DEC_MSB:DEC_LSB]})    
-	    {1'b1, BIN(SX SLV_BITS)} : MMX_ASLV = 'dSX;  
+	    {1'b1, BIN(SX SLV_BITS)} : MMX_ASLV = SLV_BITS'dSX;  
 ENDIF TRUE(SLAVE_NUM==1)   
-            default : MMX_ASLV = 'dSERR;                     
+            default : MMX_ASLV = SLV_BITS'dSERR;                     
 	  endcase                                             
        end                                                    
 
    always @(MMX_AID)                                  
      begin                                             
 	case (MMX_AID)                                
-	  ID_MMX_IDMMX_IDX : MMX_AIDOK = 1'b1; 
+	  ID_BITS'GROUP_MMX_ID : MMX_AIDOK = 1'b1; 
 	  default : MMX_AIDOK = 1'b0;                 
 	endcase                                        
      end    
   
-   ENDLOOP MX
+ENDLOOP MX
       
-     endmodule
+endmodule
 
 
 

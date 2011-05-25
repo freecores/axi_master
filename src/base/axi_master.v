@@ -125,8 +125,7 @@ OUTFILE PREFIX.v
 
 INCLUDE def_axi_master.txt
 
-  
-ITER IX ID_NUM
+ITER IDX ID_NUM
 module PREFIX(PORTS);
 
 `include "prgen_rand.v"
@@ -143,34 +142,34 @@ module PREFIX(PORTS);
    //random parameters
    integer                             GROUP_AXI_MASTER_RAND = GROUP_AXI_MASTER_RAND.DEFAULT;
    
-   wire                                GROUP_STUB_AXI_IX;
-   wire                                idle_IX;
-   wire                                scrbrd_empty_IX;
+   wire                                GROUP_STUB_AXI_IDX;
+   wire                                idle_IDX;
+   wire                                scrbrd_empty_IDX;
 
 
    always @(*)
      begin
         #FFD;
-        PREFIX_singleIX.GROUP_AXI_MASTER_RAND = GROUP_AXI_MASTER_RAND;
+        PREFIX_singleIDX.GROUP_AXI_MASTER_RAND = GROUP_AXI_MASTER_RAND;
      end
    
-   assign                              idle = CONCAT(idle_IX &);
-   assign                              scrbrd_empty = CONCAT(scrbrd_empty_IX &);
+   assign                              idle = CONCAT(idle_IDX &);
+   assign                              scrbrd_empty = CONCAT(scrbrd_empty_IDX &);
    
    
    CREATE axi_master_single.v
 
-     LOOP IX ID_NUM
-   PREFIX_single #(IX, IDIX_VAL, CMD_DEPTH)
-   PREFIX_singleIX(
+     LOOP IDX ID_NUM
+   PREFIX_single #(IDX, ID_BITS'GROUP_AXI_ID[IDX], CMD_DEPTH)
+   PREFIX_singleIDX(
                    .clk(clk),
                    .reset(reset),
-                   .GROUP_STUB_AXI(GROUP_STUB_AXI_IX),
-                   .idle(idle_IX),
-                   .scrbrd_empty(scrbrd_empty_IX)
+                   .GROUP_STUB_AXI(GROUP_STUB_AXI_IDX),
+                   .idle(idle_IDX),
+                   .scrbrd_empty(scrbrd_empty_IDX)
                    );
    
-   ENDLOOP IX
+   ENDLOOP IDX
 
      IFDEF TRUE(ID_NUM==1)
    
@@ -179,24 +178,27 @@ module PREFIX(PORTS);
    
      ELSE TRUE(ID_NUM==1)
 
-   CREATE ic.v \\
-DEFCMD(SWAP.GLOBAL PARENT PREFIX) \\
+CREATE ic.v \\
+DEFCMD(SWAP.GLOBAL CONST(PREFIX) PREFIX) \\
 DEFCMD(SWAP.GLOBAL MASTER_NUM ID_NUM) \\
 DEFCMD(SWAP.GLOBAL SLAVE_NUM 1) \\
 DEFCMD(SWAP.GLOBAL CONST(ID_BITS) ID_BITS) \\
 DEFCMD(SWAP.GLOBAL CONST(CMD_DEPTH) CMD_DEPTH) \\
 DEFCMD(SWAP.GLOBAL CONST(DATA_BITS) DATA_BITS) \\
-DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
-   LOOP IX ID_NUM
-     STOMP NEWLINE
-     DEFCMD(LOOP.GLOBAL MIX_IDX 1) \\
-     DEFCMD(SWAP.GLOBAL ID_MIX_ID0 ID_BITSIDIX_VAL)
-   ENDLOOP IX
+DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS) \\
+DEFCMD(SWAP.GLOBAL CONST(USER_BITS) 0) 
+LOOP IDX ID_NUM
+  STOMP NEWLINE
+  DEFCMD(GROUP.GLOBAL MIDX_ID overrides { ) \\
+  DEFCMD(GROUP_AXI_ID[IDX]) \\
+  DEFCMD(})
+ENDLOOP IDX
 
+  
     PREFIX_ic PREFIX_ic(
                        .clk(clk),
                        .reset(reset),
-                       .MIX_GROUP_STUB_AXI(GROUP_STUB_AXI_IX),
+                       .MIDX_GROUP_STUB_AXI(GROUP_STUB_AXI_IDX),
                        .S0_GROUP_STUB_AXI(GROUP_STUB_AXI),
                        STOMP ,
       
@@ -222,14 +224,14 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("enable", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.enable = 1;
+           IDX : PREFIX_singleIDX.enable = 1;
          endcase
       end
    endtask
 
    task enable_all;
       begin
-         PREFIX_singleIX.enable = 1;
+         PREFIX_singleIDX.enable = 1;
       end
    endtask
    
@@ -240,7 +242,7 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("write_single", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.write_single(addr, wdata);
+           IDX : PREFIX_singleIDX.write_single(addr, wdata);
          endcase
       end
    endtask
@@ -252,7 +254,7 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("read_single", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.read_single(addr, rdata);
+           IDX : PREFIX_singleIDX.read_single(addr, rdata);
          endcase
       end
    endtask
@@ -264,7 +266,7 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("check_single", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.check_single(addr, expected);
+           IDX : PREFIX_singleIDX.check_single(addr, expected);
          endcase
       end
    endtask
@@ -276,7 +278,7 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("write_and_check_single", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.write_and_check_single(addr, data);
+           IDX : PREFIX_singleIDX.write_and_check_single(addr, data);
          endcase
       end
    endtask
@@ -289,7 +291,7 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("insert_wr_cmd", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.insert_wr_cmd(addr, len, size);
+           IDX : PREFIX_singleIDX.insert_wr_cmd(addr, len, size);
          endcase
       end
    endtask
@@ -302,7 +304,7 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("insert_rd_cmd", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.insert_rd_cmd(addr, len, size);
+           IDX : PREFIX_singleIDX.insert_rd_cmd(addr, len, size);
          endcase
       end
    endtask
@@ -313,7 +315,7 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("insert_wr_data", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.insert_wr_data(wdata);
+           IDX : PREFIX_singleIDX.insert_wr_data(wdata);
          endcase
       end
    endtask
@@ -326,7 +328,7 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("insert_wr_incr_data", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.insert_wr_incr_data(addr, len, size);
+           IDX : PREFIX_singleIDX.insert_wr_incr_data(addr, len, size);
          endcase
       end
    endtask
@@ -337,7 +339,7 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
       begin
          check_master_num("insert_rand_chk", master_num);
          case (master_num)
-           IX : PREFIX_singleIX.insert_rand_chk(burst_num);
+           IDX : PREFIX_singleIDX.insert_rand_chk(burst_num);
          endcase
       end
    endtask
@@ -345,7 +347,6 @@ DEFCMD(SWAP.GLOBAL CONST(ADDR_BITS) ADDR_BITS)
    task insert_rand;
       input [31:0] burst_num;
       
-      ITER IDX ID_NUM
       reg [31:0] burst_numIDX;
       integer remain;
       begin

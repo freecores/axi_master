@@ -53,7 +53,6 @@ module PREFIX_ic_decerr(PORTS);
    reg 				  RVALID;
    reg [4-1:0]                    rvalid_cnt;
    
-
 IFDEF TRUE (USER_BITS>0)
    assign 			  BUSER = 'd0;
    assign 			  RUSER = 'd0;

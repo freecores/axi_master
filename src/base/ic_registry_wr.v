@@ -32,10 +32,6 @@ OUTFILE PREFIX_ic_registry_wr.v
 ITER MX
 ITER SX   
 
-LOOP MX
-ITER MMX_IDX
-ENDLOOP MX
-  
 module PREFIX_ic_registry_wr(PORTS);
    
 
@@ -45,82 +41,78 @@ module PREFIX_ic_registry_wr(PORTS);
 
    port 			    MMX_AWGROUP_IC_AXI_CMD;
    
-   input [ID_BITS-1:0]  MMX_WID;
+   input [ID_BITS-1:0]              MMX_WID;
    input 			    MMX_WVALID; 
    input 			    MMX_WREADY; 
    input 			    MMX_WLAST; 
-   output [SLV_BITS-1:0] MMX_WSLV;
+   output [SLV_BITS-1:0]            MMX_WSLV;
    output 			    MMX_WOK;
    
    input 			    SSX_AWVALID;
    input 			    SSX_AWREADY;
-   input [MSTR_BITS-1:0] SSX_AWMSTR;
+   input [MSTR_BITS-1:0]            SSX_AWMSTR;
    input 			    SSX_WVALID;
    input 			    SSX_WREADY;
    input 			    SSX_WLAST;
    
    
-   wire 			    AWmatch_MMX_IDMMX_IDX;
-   wire 			    Wmatch_MMX_IDMMX_IDX;
+   wire 			    AWmatch_MMX_IDGROUP_MMX_ID.IDX;
+   wire 			    Wmatch_MMX_IDGROUP_MMX_ID.IDX;
 
    wire 			    cmd_push_MMX;
-   wire 			    cmd_push_MMX_IDMMX_IDX;
+   wire 			    cmd_push_MMX_IDGROUP_MMX_ID.IDX;
    
    wire 			    cmd_pop_MMX;
-   wire 			    cmd_pop_MMX_IDMMX_IDX;
+   wire 			    cmd_pop_MMX_IDGROUP_MMX_ID.IDX;
 
-   wire [SLV_BITS-1:0] 	slave_in_MMX_IDMMX_IDX;
-   wire [SLV_BITS-1:0] 	slave_out_MMX_IDMMX_IDX;
-   wire 			    slave_empty_MMX_IDMMX_IDX;
-   wire 			    slave_full_MMX_IDMMX_IDX;
+   wire [SLV_BITS-1:0]              slave_in_MMX_IDGROUP_MMX_ID.IDX;
+   wire [SLV_BITS-1:0]              slave_out_MMX_IDGROUP_MMX_ID.IDX;
+   wire 			    slave_empty_MMX_IDGROUP_MMX_ID.IDX;
+   wire 			    slave_full_MMX_IDGROUP_MMX_ID.IDX;
 
    wire 			    cmd_push_SSX;
    wire 			    cmd_pop_SSX;
-   wire [MSTR_BITS-1:0] master_in_SSX;
-   wire [MSTR_BITS-1:0] master_out_SSX;
+   wire [MSTR_BITS-1:0]             master_in_SSX;
+   wire [MSTR_BITS-1:0]             master_out_SSX;
    wire 			    master_empty_SSX;
    wire 			    master_full_SSX;
    
-   reg [SLV_BITS-1:0] 	MMX_WSLV;
+   reg [SLV_BITS-1:0]               MMX_WSLV;
    reg 				    MMX_WOK;
 
    
    
    
-   assign                           AWmatch_MMX_IDMMX_IDX  = MMX_AWID == ID_MMX_IDMMX_IDX;
+   assign                           AWmatch_MMX_IDGROUP_MMX_ID.IDX  = MMX_AWID == ID_BITS'GROUP_MMX_ID;
       
-   assign 			    Wmatch_MMX_IDMMX_IDX   = MMX_WID == ID_MMX_IDMMX_IDX;
+   assign 			    Wmatch_MMX_IDGROUP_MMX_ID.IDX   = MMX_WID == ID_BITS'GROUP_MMX_ID;
 		   
 		   
    assign 			    cmd_push_MMX           = MMX_AWVALID & MMX_AWREADY;
-   assign 			    cmd_push_MMX_IDMMX_IDX = cmd_push_MMX & AWmatch_MMX_IDMMX_IDX;
+   assign 			    cmd_push_MMX_IDGROUP_MMX_ID.IDX = cmd_push_MMX & AWmatch_MMX_IDGROUP_MMX_ID.IDX;
    assign 			    cmd_pop_MMX            = MMX_WVALID & MMX_WREADY & MMX_WLAST;
-   assign  			    cmd_pop_MMX_IDMMX_IDX  = cmd_pop_MMX & Wmatch_MMX_IDMMX_IDX;
+   assign  			    cmd_pop_MMX_IDGROUP_MMX_ID.IDX  = cmd_pop_MMX & Wmatch_MMX_IDGROUP_MMX_ID.IDX;
 
    assign 			    cmd_push_SSX           = SSX_AWVALID & SSX_AWREADY;
    assign 			    cmd_pop_SSX            = SSX_WVALID & SSX_WREADY & SSX_WLAST;
    assign 			    master_in_SSX          = SSX_AWMSTR;
    
-   assign 			    slave_in_MMX_IDMMX_IDX = MMX_AWSLV;
+   assign 			    slave_in_MMX_IDGROUP_MMX_ID.IDX = MMX_AWSLV;
 
    
    LOOP MX
-   always @(MMX_WID                                                       
-	    or slave_out_MMX_IDMMX_IDX                                   
-	    )                                                              
+   always @(*)                                                              
      begin                                                                 
 	case (MMX_WID)                                                    
-	  ID_MMX_IDMMX_IDX : MMX_WSLV = slave_out_MMX_IDMMX_IDX; 
+	  ID_BITS'GROUP_MMX_ID : MMX_WSLV = slave_out_MMX_IDGROUP_MMX_ID.IDX; 
 	  default : MMX_WSLV = SERR;                           
 	endcase                                                            
      end   
 
-   always @(MMX_WSLV                                                      
-	    or master_out_SSX                                              
-	    )                                                              
+   always @(*)                                                              
      begin                                                                 
 	case (MMX_WSLV)                                                   
-	  'dSX : MMX_WOK = master_out_SSX == 'dMX;                       
+	  SLV_BITS'dSX : MMX_WOK = master_out_SSX == MSTR_BITS'dMX;                       
 	  default : MMX_WOK = 1'b0;                                       
 	endcase                                                            
      end                                                                   
@@ -128,25 +120,25 @@ module PREFIX_ic_registry_wr(PORTS);
    ENDLOOP MX
       
 LOOP MX
-LOOP MMX_IDX
+ LOOP IX GROUP_MMX_ID.NUM
    prgen_fifo #(SLV_BITS, CMD_DEPTH)  
-   slave_fifo_MMX_IDMMX_IDX(                             
-                    .clk(clk),                              
-                    .reset(reset),                          
-                    .push(cmd_push_MMX_IDMMX_IDX),       
-                    .pop(cmd_pop_MMX_IDMMX_IDX),         
-                    .din(slave_in_MMX_IDMMX_IDX),        
-                    .dout(slave_out_MMX_IDMMX_IDX),      
-		            .empty(slave_empty_MMX_IDMMX_IDX),   
-		            .full(slave_full_MMX_IDMMX_IDX)      
-                    );
+   slave_fifo_MMX_IDIX(
+                       .clk(clk),                              
+                       .reset(reset),                          
+                       .push(cmd_push_MMX_IDIX),       
+                       .pop(cmd_pop_MMX_IDIX),         
+                       .din(slave_in_MMX_IDIX),        
+                       .dout(slave_out_MMX_IDIX),      
+		       .empty(slave_empty_MMX_IDIX),   
+		       .full(slave_full_MMX_IDIX)      
+                       );
 
-   ENDLOOP MMX_IDX
-   ENDLOOP MX
+ ENDLOOP IX
+ENDLOOP MX
 
 	
    
-   LOOP SX
+LOOP SX
    prgen_fifo #(MSTR_BITS, 32)
    master_fifo_SSX(                                            
 		   .clk(clk),                                   
@@ -159,7 +151,7 @@ LOOP MMX_IDX
 		   .full(master_full_SSX)                      
 		   );                                           
 
-   ENDLOOP SX
+ENDLOOP SX
    
 endmodule
 

@@ -88,4 +88,7 @@ GROUP AXI_MASTER_RAND is {
    addr_min    SON(DEFAULT 0)
    addr_max    SON(DEFAULT {DATA_BITS{1'b1}})
 }
+
+SWAP ID_NUM GROUP_AXI_ID.NUM
+  
   

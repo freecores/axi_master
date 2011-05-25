@@ -27,10 +27,35 @@
 ////                                                             ////
 //////////////////////////////////////////////////////////////////##>
 
+REQUIRE(1.3)
+
 INCLUDE def_ic_static.txt
 
-SWAP PREFIX     PARENT                          ##prefix for all module and file names
+SWAP #FFD            #1                              ##flip-flop delay
 
-SWAP SLAVE_NUM  1                               ##number of slaves
+SWAP.USER PREFIX     fabric_MASTER_NUM_SLAVE_NUM     ##prefix for all module and file names
 
-SWAP USER_BITS  0                               ##AXI user bits
+SWAP.USER MASTER_NUM 3                               ##number of masters
+SWAP.USER SLAVE_NUM  6                               ##number of slaves
+
+DEFINE.USER          DEF_DECERR_SLV                  ##use interanl decode slave error
+
+SWAP ID_BITS         3                               ##AXI ID bits
+
+GROUP M0_ID is {
+  b000
+  b001
+}
+GROUP M1_ID is {
+  b011
+}
+GROUP M2_ID is {
+  b101
+}
+  
+SWAP.USER CMD_DEPTH  8                               ##AXI command depth for read and write
+
+SWAP.USER DATA_BITS 64                               ##AXI data bits
+SWAP.USER ADDR_BITS 32                               ##AXI address bits
+
+SWAP.USER USER_BITS  4                               ##AXI user bits

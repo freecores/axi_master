@@ -50,7 +50,6 @@ CREATE prgen_rand.v DEFCMD(DEFINE NOT_IN_LIST)
 			               (MAX_CMDS <= 256) ? 8 :
 			               (MAX_CMDS <= 512) ? 9 : 0; //0 is ilegal
                                        
-     
    
    input 			       clk;
    input                               reset;
@@ -75,6 +74,8 @@ CREATE prgen_rand.v DEFCMD(DEFINE NOT_IN_LIST)
    reg 				       rd_enable = 0;
    reg                                 wr_enable = 0;
    reg                                 wait_for_write = 0;
+   reg                                 err_on_wr_resp = 1;
+   reg                                 err_on_rd_resp = 1;
    
    reg                                 scrbrd_enable = 0;
    reg [LEN_BITS-1:0] 		       wvalid_cnt;
@@ -225,7 +226,7 @@ CREATE prgen_rand.v DEFCMD(DEFINE NOT_IN_LIST)
    assign 	  AWADDR  = wr_cmd_addr;
    assign 	  AWLEN   = wr_cmd_len;
    assign 	  AWSIZE  = wr_cmd_size;
-   assign 	  AWID    = MASTER_ID;
+   assign         AWID    = MASTER_ID;
    assign 	  AWBURST = 2'd1; //INCR only
    assign 	  AWCACHE = 4'd0; //not supported
    assign 	  AWPROT  = 4'd0; //not supported
@@ -249,7 +250,7 @@ CREATE prgen_rand.v DEFCMD(DEFINE NOT_IN_LIST)
    assign 	  ARLOCK  = 2'd0; //not supported
 
    assign         rd_fifo_data_in = RDATA;
-   assign         rd_fifo_resp_in = BRESP;
+   assign         rd_fifo_resp_in = RRESP;
    
    assign 	  wr_data_bytes = 1'b1 << wr_data_size;
 
@@ -548,6 +549,8 @@ CREATE prgen_rand.v DEFCMD(DEFINE NOT_IN_LIST)
 	 rd_fifo_pop = 1; 
 	 @(posedge clk); #FFD;
 	 rd_fifo_pop = 0;
+         if ((resp != 2'b00) && (err_on_rd_resp))
+           $display("PREFIX_MASTER%0d: RRESP_ERROR: Received RRESP 2'b%0b.\tTime: %0d ns.", MASTER_NUM, resp, $time);
       end
    endtask
    
@@ -582,6 +585,8 @@ CREATE prgen_rand.v DEFCMD(DEFINE NOT_IN_LIST)
 	 wr_resp_pop = 1; 
 	 @(posedge clk); #FFD;
 	 wr_resp_pop = 0;
+         if ((resp != 2'b00) && (err_on_wr_resp))
+           $display("PREFIX_MASTER%0d: BRESP_ERROR: Received BRESP 2'b%0b.\tTime: %0d ns.", MASTER_NUM, resp, $time);
       end
    endtask
    
@@ -638,7 +643,7 @@ CREATE prgen_rand.v DEFCMD(DEFINE NOT_IN_LIST)
       begin
          read_single_ack(addr, rdata, resp);
          if (rdata !== expected)
-           $display("MASTER%0d: CHK_SINGLE_ERROR: Address: 0x%0h, Expected: 0x%0h, Received: 0x%0h.\tTime: %0d ns.", MASTER_NUM, addr, expected, rdata, $time);
+           $display("PREFIX_MASTER%0d: CHK_SINGLE_ERROR: Address: 0x%0h, Expected: 0x%0h, Received: 0x%0h.\tTime: %0d ns.", MASTER_NUM, addr, expected, rdata, $time);
       end
    endtask
                
@@ -678,7 +683,7 @@ CREATE prgen_rand.v DEFCMD(DEFINE NOT_IN_LIST)
          rdata_masked = rdata & mask;
          
          if (expected_data !== rdata_masked)
-           $display("MASTER%0d: SCRBRD_ERROR: Address: 0x%0h, Expected: 0x%0h, Received: 0x%0h.\tTime: %0d ns.", MASTER_NUM, addr, expected_data, rdata, $time);
+           $display("PREFIX_MASTER%0d: SCRBRD_ERROR: Address: 0x%0h, Expected: 0x%0h, Received: 0x%0h.\tTime: %0d ns.", MASTER_NUM, addr, expected_data, rdata, $time);
       end
    endtask
 
