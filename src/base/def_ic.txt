@@ -31,7 +31,7 @@ REQUIRE(1.3)
 
 INCLUDE def_ic_static.txt
 
-SWAP #FFD            #1                              ##flip-flop delay
+SWAP.GLOBAL #FFD            #1                              ##flip-flop delay
 
 SWAP.USER PREFIX     fabric_MASTER_NUM_SLAVE_NUM     ##prefix for all module and file names
 

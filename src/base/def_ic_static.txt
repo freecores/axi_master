@@ -28,7 +28,7 @@
 //////////////////////////////////////////////////////////////////##>
 
 ##Static defines
-SWAP MODEL_NAME AXI interconnect fabric
+SWAP.GLOBAL MODEL_NAME AXI interconnect fabric
 
 SWAP MSTRS MASTER_NUM
 SWAP SLVS EXPR(SLAVE_NUM+DVAL(DEF_DECERR_SLV))
