@@ -139,7 +139,7 @@ ENDLOOP MX
 	
    
 LOOP SX
-   prgen_fifo #(MSTR_BITS, 32)
+   prgen_fifo #(MSTR_BITS, 32) //TBD SLV_DEPTH
    master_fifo_SSX(                                            
 		   .clk(clk),                                   
 		   .reset(reset),                               

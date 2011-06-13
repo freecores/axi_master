@@ -27,7 +27,7 @@
 ////                                                             ////
 //////////////////////////////////////////////////////////////////##>
 
-REQUIRE(1.3)
+REQUIRE(1.4)
 
 INCLUDE def_ic_static.txt
 
@@ -38,24 +38,25 @@ SWAP.USER PREFIX     fabric_MASTER_NUM_SLAVE_NUM     ##prefix for all module and
 SWAP.USER MASTER_NUM 3                               ##number of masters
 SWAP.USER SLAVE_NUM  6                               ##number of slaves
 
-DEFINE.USER          DEF_DECERR_SLV                  ##use interanl decode slave error
-
-SWAP ID_BITS         3                               ##AXI ID bits
-
-GROUP M0_ID is {
-  b000
-  b001
-}
-GROUP M1_ID is {
-  b011
-}
-GROUP M2_ID is {
-  b101
-}
-  
 SWAP.USER CMD_DEPTH  8                               ##AXI command depth for read and write
 
 SWAP.USER DATA_BITS 64                               ##AXI data bits
 SWAP.USER ADDR_BITS 32                               ##AXI address bits
 
+DEFINE.USER          DEF_DECERR_SLV                  ##use interanl decode slave error
+  
 SWAP.USER USER_BITS  4                               ##AXI user bits
+
+SWAP.USER ID_BITS    3                               ##AXI ID bits
+
+GROUP.USER M0_ID is {                                ##Supported AXI IDs for master 0
+  b000
+  b001
+}
+GROUP.USER M1_ID is {                                ##Supported AXI IDs for master 
+  b011
+}
+GROUP.USER M2_ID is {                                ##Supported AXI IDs for master 2
+  b101
+}
+  

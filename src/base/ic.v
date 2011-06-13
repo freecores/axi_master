@@ -33,9 +33,11 @@ INCLUDE def_ic.txt
 ITER MX
 ITER SX SLAVE_NUM ##external slave ports don't include decerr slave
 
-##check all masters have IDs
-VERIFY (GROUP_MMX_ID.NUM > 0) else Master MX does not have group for AXI IDs
+VERIFY (GROUP_MMX_ID.NUM > 0) ##Master MX does not have group for AXI IDs
   
+VERIFY(UNIQUE(GONCAT(GROUP_MMX_ID ,))) ##Master MX IDs are not unique
+
+
 module  PREFIX_ic (PORTS); 
 
    input 				      clk;

@@ -26,8 +26,7 @@
 //// details. http://www.gnu.org/licenses/lgpl.html              ////
 ////                                                             ////
 //////////////////////////////////////////////////////////////////##>
-
-##Static defines
+  
 SWAP.GLOBAL MODEL_NAME AXI interconnect fabric
 
 SWAP MSTRS MASTER_NUM

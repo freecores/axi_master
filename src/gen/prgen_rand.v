@@ -66,7 +66,6 @@ function integer align;
       input [31:0]  num;
       input [31:0]  align_size;
       
-      integer       align;
       begin
          align = num - (num % align_size);
       end
@@ -76,14 +75,13 @@ endfunction
 function integer rand_align;
       input [31:0] min;
       input [31:0] max;
-      input [31:0] align;
+      input [31:0] align_val;
 
-      integer      rand_align;
       begin
          rand_align = rand(min, max);
          
-         if (rand_align > align)
-           rand_align = align(rand_align, align);
+         if (rand_align > align_val)
+           rand_align = align(rand_align, align_val);
       end
 endfunction
 
