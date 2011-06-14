@@ -40,8 +40,16 @@ SWAP SLV_BITS  LOG2(SLVS)
 
 SWAP SERR EXPR(SLVS-1)
 
+IFDEF UNIQUE_ID
+SWAP ID_BITS  MSTR_ID_BITS
+SWAP ADD_ID   NULL
+ELSE UNIQUE_ID
+SWAP ID_BITS  EXPR(MSTR_ID_BITS+EXTRA_BITS)
+SWAP ADD_ID   BIN(MX MSTR_BITS NOPRE)_
+ENDIF UNIQUE_ID
+  
 GROUP IC_AXI_A is {
-    ID       ID_BITS                input
+    ID       ID_BITS                input  SON(CHANGE 1)
     ADDR     ADDR_BITS              input
     LEN      4                      input
     SIZE     2                      input
@@ -55,7 +63,7 @@ GROUP IC_AXI_A is {
 }
 
 GROUP IC_AXI_W is {
-    ID        ID_BITS                input
+    ID        ID_BITS                input  SON(CHANGE 1)
     DATA      DATA_BITS              input
     STRB      DATA_BITS/8            input
     LAST      1                      input
@@ -65,7 +73,7 @@ GROUP IC_AXI_W is {
 }
 
 GROUP IC_AXI_B is {
-    ID        ID_BITS                output
+    ID        ID_BITS                output  SON(CHANGE 1)
     RESP      2                      output
     USER      USER_BITS              output
     VALID     1                      output
@@ -73,7 +81,7 @@ GROUP IC_AXI_B is {
 }
 
 GROUP IC_AXI_R is {
-    ID        ID_BITS                output
+    ID        ID_BITS                output  SON(CHANGE 1)
     DATA      DATA_BITS              output
     RESP      2                      output
     LAST      1                      output
@@ -92,7 +100,7 @@ GROUP IC_AXI joins {
 
 GROUP IC_AXI_CMD is {
     SLV       SLV_BITS               input
-    ID        ID_BITS                input
+    ID        ID_BITS                input  SON(CHANGE 1)
     VALID     1                      input
     READY     1                      input
 }

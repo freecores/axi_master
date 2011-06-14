@@ -61,8 +61,8 @@ ENDIF TRUE(SLAVE_NUM==1)
 
    always @(MMX_AID)                                  
      begin                                             
-	case (MMX_AID)                                
-	  ID_BITS'GROUP_MMX_ID : MMX_AIDOK = 1'b1; 
+	case (MMX_AID[MSTR_ID_BITS-1:0])                                
+	  MSTR_ID_BITS'bGROUP_MMX_ID : MMX_AIDOK = 1'b1; 
 	  default : MMX_AIDOK = 1'b0;                 
 	endcase                                        
      end    

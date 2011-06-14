@@ -65,12 +65,21 @@ module PREFIX_ic_addr (PORTS);
    reg [EXPR(MSTR_BITS-1):0] 		      SSX_AMSTR;
 
    wire 				      SSX_AIDOK;
+
+   wire [EXPR(ADDR_BITS-1):0]                 MMX_AADDR_valid;
+   wire [EXPR(ID_BITS-1):0]                   MMX_AID_valid;
+
+
+   
+   assign                                     MMX_AADDR_valid = MMX_AADDR & {ADDR_BITS{MMX_AVALID}};
+   assign                                     MMX_AID_valid   = MMX_AID & {ID_BITS{MMX_AVALID}};
+
    
    CREATE ic_dec.v def_ic.txt
    PREFIX_ic_dec
    PREFIX_ic_dec (
-		  .MMX_AADDR(MMX_AADDR),
-		  .MMX_AID(MMX_AID),
+		  .MMX_AADDR(MMX_AADDR_valid),
+		  .MMX_AID(MMX_AID_valid),
 		  .MMX_ASLV(MMX_ASLV),
 		  .MMX_AIDOK(MMX_AIDOK),
 		  STOMP ,

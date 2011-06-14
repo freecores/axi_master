@@ -45,8 +45,8 @@ SWAP.USER CMD_DEPTH   4                  ##AXI command depth for read and write
 SWAP.USER ID_BITS     4                  ##AXI ID bits
   
 GROUP.USER AXI_ID is {                   ##Supported AXI IDs (one per internal master)
-  b0011
-  b0010
-  b1010
+  0011
+  0010
+  1010
 }
 

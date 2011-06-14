@@ -47,16 +47,21 @@ DEFINE.USER          DEF_DECERR_SLV                  ##use interanl decode slave
   
 SWAP.USER USER_BITS  4                               ##AXI user bits
 
-SWAP.USER ID_BITS    3                               ##AXI ID bits
+SWAP.USER MSTR_ID_BITS    4                          ##AXI ID bits
 
-GROUP.USER M0_ID is {                                ##Supported AXI IDs for master 0
-  b000
-  b001
+UNDEF.USER UNIQUE_ID                                 ##If defined all IDs must be unique, else bits will be added to slave IDs to identify masters
+  
+
+GROUP.USER M0_ID is {                                ##Supported AXI IDs for master 0 (binary)
+  000
+  001
 }
-GROUP.USER M1_ID is {                                ##Supported AXI IDs for master 
-  b011
+GROUP.USER M1_ID is {                                ##Supported AXI IDs for master 1 (binary)
+  011
 }
-GROUP.USER M2_ID is {                                ##Supported AXI IDs for master 2
-  b101
+GROUP.USER M2_ID is {                                ##Supported AXI IDs for master 2 (binary)
+  000
+  100
+  101
 }
   

@@ -72,9 +72,9 @@ module PREFIX_ic_registry_resp(PORTS);
    
    
    
-   assign 			    Amatch_MMX_IDGROUP_MMX_ID.IDX = MMX_AID == ID_BITS'GROUP_MMX_ID;
+   assign 			    Amatch_MMX_IDGROUP_MMX_ID.IDX = MMX_AID == ID_BITS'bADD_IDGROUP_MMX_ID;
    
-   assign 			    match_SSX_MMX_IDGROUP_MMX_ID.IDX = SSX_ID == ID_BITS'GROUP_MMX_ID;
+   assign 			    match_SSX_MMX_IDGROUP_MMX_ID.IDX = SSX_ID == ID_BITS'bADD_IDGROUP_MMX_ID;
 
 		   
    assign 			    cmd_push_MMX           = MMX_AVALID & MMX_AREADY;
@@ -101,21 +101,21 @@ IFDEF DEF_DECERR_SLV
 ELSE DEF_DECERR_SLV
    assign 			    ERR_MSTR = 'd0;
 ENDIF DEF_DECERR_SLV
-          
+
    
 LOOP SX
    always @(*)                                               
      begin                                                                     
-	case (SSX_ID)
-	  ID_BITS'GROUP_MMX_ID : SSX_MSTR = MSTR_BITS'dMX;
+	case (SSX_ID)                                            
+	  ID_BITS'bADD_IDGROUP_MMX_ID : SSX_MSTR = MSTR_BITS'dMX;
 	  default : SSX_MSTR = ERR_MSTR;                                      
 	endcase                                                                
      end                                                                       
    
    always @(*)                                                                  
      begin                                                                     
-	case (SSX_ID)
-	  ID_BITS'GROUP_MMX_ID : SSX_OK = slave_out_MMX_IDGROUP_MMX_ID.IDX == SLV_BITS'dSX;
+	case (SSX_ID)                                           
+	  ID_BITS'bADD_IDGROUP_MMX_ID : SSX_OK = slave_out_MMX_IDGROUP_MMX_ID.IDX == SLV_BITS'dSX;
 	  default : SSX_OK = 1'b1; //SLVERR                                   
 	endcase                                                                
      end                                                                       

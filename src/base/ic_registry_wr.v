@@ -83,9 +83,9 @@ module PREFIX_ic_registry_wr(PORTS);
    
    
    
-   assign                           AWmatch_MMX_IDGROUP_MMX_ID.IDX  = MMX_AWID == ID_BITS'GROUP_MMX_ID;
+   assign                           AWmatch_MMX_IDGROUP_MMX_ID.IDX  = MMX_AWID == ID_BITS'bADD_IDGROUP_MMX_ID;
       
-   assign 			    Wmatch_MMX_IDGROUP_MMX_ID.IDX   = MMX_WID == ID_BITS'GROUP_MMX_ID;
+   assign 			    Wmatch_MMX_IDGROUP_MMX_ID.IDX   = MMX_WID == ID_BITS'bADD_IDGROUP_MMX_ID;
 		   
 		   
    assign 			    cmd_push_MMX           = MMX_AWVALID & MMX_AWREADY;
@@ -103,8 +103,8 @@ module PREFIX_ic_registry_wr(PORTS);
    LOOP MX
    always @(*)                                                              
      begin                                                                 
-	case (MMX_WID)                                                    
-	  ID_BITS'GROUP_MMX_ID : MMX_WSLV = slave_out_MMX_IDGROUP_MMX_ID.IDX; 
+	case (MMX_WID)                                            
+	  ID_BITS'bADD_IDGROUP_MMX_ID : MMX_WSLV = slave_out_MMX_IDGROUP_MMX_ID.IDX;
 	  default : MMX_WSLV = SERR;                           
 	endcase                                                            
      end   
