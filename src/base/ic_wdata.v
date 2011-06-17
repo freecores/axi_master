@@ -37,28 +37,28 @@ module PREFIX_ic_wdata (PORTS);
 
    parameter 				  STRB_BITS  = DATA_BITS/8;
    
-   input 				      clk;
-   input 				      reset;
+   input                                  clk;
+   input                                  reset;
    
-   port 				      MMX_AWGROUP_IC_AXI_CMD;
-   port 				      MMX_WGROUP_IC_AXI_W;
-   revport 				      SSX_WGROUP_IC_AXI_W;
-   input 				      SSX_AWVALID;
-   input 				      SSX_AWREADY;
-   input [MSTR_BITS-1:0]      SSX_AWMSTR;
+   port 			          MMX_AWGROUP_IC_AXI_CMD;
+   port 		                  MMX_WGROUP_IC_AXI_W;
+   revport 			          SSX_WGROUP_IC_AXI_W;
+   input                                  SSX_AWVALID;
+   input                                  SSX_AWREADY;
+   input [MSTR_BITS-1:0]                  SSX_AWMSTR;
 
 
-   parameter 				  WBUS_WIDTH = GONCAT(GROUP_IC_AXI_W.IN.WIDTH +);
+   parameter                              WBUS_WIDTH = GONCAT(GROUP_IC_AXI_W.IN.WIDTH +);
 
    
-   wire [WBUS_WIDTH-1:0] 	  SSX_WBUS;
+   wire [WBUS_WIDTH-1:0]                  SSX_WBUS;
    
-   wire [WBUS_WIDTH-1:0] 	  MMX_WBUS;
+   wire [WBUS_WIDTH-1:0]                  MMX_WBUS;
    
-   wire [SLV_BITS-1:0] 		  MMX_WSLV;
-   wire 				      MMX_WOK;
+   wire [SLV_BITS-1:0]                    MMX_WSLV;
+   wire                                   MMX_WOK;
    
-   wire 				      SSX_MMX;
+   wire                                   SSX_MMX;
 
    
 
@@ -78,12 +78,12 @@ module PREFIX_ic_wdata (PORTS);
 			    .MMX_WLAST(MMX_WLAST),
 			    .MMX_WSLV(MMX_WSLV),
 			    .MMX_WOK(MMX_WOK),
-    			.SSX_AWVALID(SSX_AWVALID),
-    			.SSX_AWREADY(SSX_AWREADY),
+    			    .SSX_AWVALID(SSX_AWVALID),
+    			    .SSX_AWREADY(SSX_AWREADY),
 			    .SSX_AWMSTR(SSX_AWMSTR),
-    			.SSX_WVALID(SSX_WVALID),
-    			.SSX_WREADY(SSX_WREADY),
-    			.SSX_WLAST(SSX_WLAST),
+    			    .SSX_WVALID(SSX_WVALID),
+    			    .SSX_WREADY(SSX_WREADY),
+    			    .SSX_WLAST(SSX_WLAST),
 			    STOMP ,
 			    );
 

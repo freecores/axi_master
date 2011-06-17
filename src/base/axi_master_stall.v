@@ -165,10 +165,10 @@ module PREFIX_stall(PORTS);
        end
      else if (stall_enable)
        begin
-    	  ARSTALL <= #FFD ARSTALL_pre & ARREADY;
+    	  ARSTALL <= #FFD ARSTALL_pre & ARREADY; //keep VALID signal stable while ~READY
     	  RSTALL  <= #FFD RSTALL_pre;
-    	  AWSTALL <= #FFD AWSTALL_pre & AWREADY;
-    	  WSTALL  <= #FFD WSTALL_pre & WREADY;
+    	  AWSTALL <= #FFD AWSTALL_pre & AWREADY; //keep VALID signal stable while ~READY
+    	  WSTALL  <= #FFD WSTALL_pre & WREADY; //keep VALID signal stable while ~READY
     	  BSTALL  <= #FFD BSTALL_pre;
        end
      else

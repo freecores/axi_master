@@ -482,11 +482,19 @@ CREATE prgen_rand.v DEFCMD(DEFINE NOT_IN_LIST)
       reg [LEN_BITS-1:0]   len;
       reg [SIZE_BITS-1:0]  size;
 
+      integer size_bytes;
+      integer burst_bytes;
       begin
          if (DATA_BITS==32) size_max = 2'b10;
          len   = rand(len_min, len_max);
          size  = rand(size_min, size_max);
-         addr  = rand_align(addr_min, addr_max, 1 << size);
+         size_bytes  = 1 << size;
+         burst_bytes = size_bytes * (len+1);
+         addr  = rand_align(addr_min, addr_max, size_bytes);
+         if (addr[11:0] + burst_bytes > 16'h1000) //don't cross 4KByte page
+           begin
+              addr = addr - burst_bytes;
+           end
          
          if (ahb_bursts)
            begin
@@ -845,28 +853,28 @@ CREATE prgen_fifo.v DEFCMD(DEFINE STUB)
 CREATE axi_master_stall.v
    PREFIX_stall
      PREFIX_stall (
-                       .clk(clk),
-                       .reset(reset),
+                   .clk(clk),
+                   .reset(reset),
 
-                       .rd_hold(rd_hold),
-                       .wr_hold(wr_hold),
-                       
-                       .ARVALID_pre(ARVALID_pre),
-                       .RREADY_pre(RREADY_pre),
-                       .AWVALID_pre(AWVALID_pre),
-                       .WVALID_pre(WVALID_pre),
-                       .BREADY_pre(BREADY_pre),
-                       
-                       .ARREADY(ARREADY),
-                       .AWREADY(AWREADY),
-                       .WREADY(WREADY),
-                       
-                       .ARVALID(ARVALID),
-                       .RREADY(RREADY),
-                       .AWVALID(AWVALID),
-                       .WVALID(WVALID),
-                       .BREADY(BREADY)
-                       );
+                   .rd_hold(rd_hold),
+                   .wr_hold(wr_hold),
+     
+                   .ARVALID_pre(ARVALID_pre),
+                   .RREADY_pre(RREADY_pre),
+                   .AWVALID_pre(AWVALID_pre),
+                   .WVALID_pre(WVALID_pre),
+                   .BREADY_pre(BREADY_pre),
+     
+                   .ARREADY(ARREADY),
+                   .AWREADY(AWREADY),
+                   .WREADY(WREADY),
+     
+                   .ARVALID(ARVALID),
+                   .RREADY(RREADY),
+                   .AWVALID(AWVALID),
+                   .WVALID(WVALID),
+                   .BREADY(BREADY)
+                   );
 
 
 endmodule

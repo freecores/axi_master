@@ -38,8 +38,9 @@ SWAP.USER PREFIX     fabric_MASTER_NUM_SLAVE_NUM     ##prefix for all module and
 SWAP.USER MASTER_NUM 3                               ##number of masters
 SWAP.USER SLAVE_NUM  6                               ##number of slaves
 
-SWAP.USER CMD_DEPTH  8                               ##AXI command depth for read and write
-
+SWAP.USER CMD_DEPTH  4                               ##AXI master command depth for read and write
+SWAP.USER SLV_DEPTH  8                               ##AXI slave command depth for read and write
+  
 SWAP.USER DATA_BITS 64                               ##AXI data bits
 SWAP.USER ADDR_BITS 32                               ##AXI address bits
 

@@ -65,6 +65,7 @@ module PREFIX_ic_registry_wr(PORTS);
    wire 			    cmd_pop_MMX;
    wire 			    cmd_pop_MMX_IDGROUP_MMX_ID.IDX;
 
+   wire                             slave_empty_MMX;
    wire [SLV_BITS-1:0]              slave_in_MMX_IDGROUP_MMX_ID.IDX;
    wire [SLV_BITS-1:0]              slave_out_MMX_IDGROUP_MMX_ID.IDX;
    wire 			    slave_empty_MMX_IDGROUP_MMX_ID.IDX;
@@ -80,6 +81,9 @@ module PREFIX_ic_registry_wr(PORTS);
    reg [SLV_BITS-1:0]               MMX_WSLV;
    reg 				    MMX_WOK;
 
+   reg                              MMX_pending;
+   reg                              MMX_pending_d;
+   wire                             MMX_pending_rise;
    
    
    
@@ -88,7 +92,7 @@ module PREFIX_ic_registry_wr(PORTS);
    assign 			    Wmatch_MMX_IDGROUP_MMX_ID.IDX   = MMX_WID == ID_BITS'bADD_IDGROUP_MMX_ID;
 		   
 		   
-   assign 			    cmd_push_MMX           = MMX_AWVALID & MMX_AWREADY;
+   assign 			    cmd_push_MMX           = MMX_AWVALID & (MMX_pending ? MMX_pending_rise : MMX_AWREADY);
    assign 			    cmd_push_MMX_IDGROUP_MMX_ID.IDX = cmd_push_MMX & AWmatch_MMX_IDGROUP_MMX_ID.IDX;
    assign 			    cmd_pop_MMX            = MMX_WVALID & MMX_WREADY & MMX_WLAST;
    assign  			    cmd_pop_MMX_IDGROUP_MMX_ID.IDX  = cmd_pop_MMX & Wmatch_MMX_IDGROUP_MMX_ID.IDX;
@@ -99,6 +103,21 @@ module PREFIX_ic_registry_wr(PORTS);
    
    assign 			    slave_in_MMX_IDGROUP_MMX_ID.IDX = MMX_AWSLV;
 
+
+   assign                           MMX_pending_rise = MMX_pending & (~MMX_pending_d);
+   
+   always @(posedge clk or posedge reset)
+     if (reset)
+       begin
+          MMX_pending   <= #FFD 1'b0;
+          MMX_pending_d <= #FFD 1'b0;
+       end
+     else
+       begin
+          MMX_pending   <= #FFD MMX_AWVALID & (~MMX_AWREADY);
+          MMX_pending_d <= #FFD MMX_pending;
+       end
+   
    
    LOOP MX
    always @(*)                                                              
@@ -112,7 +131,7 @@ module PREFIX_ic_registry_wr(PORTS);
    always @(*)                                                              
      begin                                                                 
 	case (MMX_WSLV)                                                   
-	  SLV_BITS'dSX : MMX_WOK = master_out_SSX == MSTR_BITS'dMX;                       
+	  SLV_BITS'dSX : MMX_WOK = (master_out_SSX == MSTR_BITS'dMX) & (~slave_empty_MMX);
 	  default : MMX_WOK = 1'b0;                                       
 	endcase                                                            
      end                                                                   
@@ -120,7 +139,9 @@ module PREFIX_ic_registry_wr(PORTS);
    ENDLOOP MX
       
 LOOP MX
+  assign slave_empty_MMX = GONCAT(slave_empty_MMX_IDGROUP_MMX_ID.IDX &);
  LOOP IX GROUP_MMX_ID.NUM
+   
    prgen_fifo #(SLV_BITS, CMD_DEPTH)  
    slave_fifo_MMX_IDIX(
                        .clk(clk),                              
@@ -139,7 +160,7 @@ ENDLOOP MX
 	
    
 LOOP SX
-   prgen_fifo #(MSTR_BITS, 32) //TBD SLV_DEPTH
+   prgen_fifo #(MSTR_BITS, SLV_DEPTH)
    master_fifo_SSX(                                            
 		   .clk(clk),                                   
 		   .reset(reset),                               
