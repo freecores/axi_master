@@ -84,6 +84,9 @@ module PREFIX_ic_registry_wr(PORTS);
    reg                              MMX_pending;
    reg                              MMX_pending_d;
    wire                             MMX_pending_rise;
+   reg                              SSX_pending;
+   reg                              SSX_pending_d;
+   wire                             SSX_pending_rise;
    
    
    
@@ -97,7 +100,7 @@ module PREFIX_ic_registry_wr(PORTS);
    assign 			    cmd_pop_MMX            = MMX_WVALID & MMX_WREADY & MMX_WLAST;
    assign  			    cmd_pop_MMX_IDGROUP_MMX_ID.IDX  = cmd_pop_MMX & Wmatch_MMX_IDGROUP_MMX_ID.IDX;
 
-   assign 			    cmd_push_SSX           = SSX_AWVALID & SSX_AWREADY;
+   assign 			    cmd_push_SSX           = SSX_AWVALID & (SSX_pending ? SSX_pending_rise : SSX_AWREADY);
    assign 			    cmd_pop_SSX            = SSX_WVALID & SSX_WREADY & SSX_WLAST;
    assign 			    master_in_SSX          = SSX_AWMSTR;
    
@@ -105,18 +108,24 @@ module PREFIX_ic_registry_wr(PORTS);
 
 
    assign                           MMX_pending_rise = MMX_pending & (~MMX_pending_d);
+   assign                           SSX_pending_rise = SSX_pending & (~SSX_pending_d);
    
    always @(posedge clk or posedge reset)
      if (reset)
        begin
           MMX_pending   <= #FFD 1'b0;
           MMX_pending_d <= #FFD 1'b0;
+          SSX_pending   <= #FFD 1'b0;
+          SSX_pending_d <= #FFD 1'b0;
        end
      else
        begin
           MMX_pending   <= #FFD MMX_AWVALID & (~MMX_AWREADY);
           MMX_pending_d <= #FFD MMX_pending;
+          SSX_pending   <= #FFD SSX_AWVALID & (~SSX_AWREADY);
+          SSX_pending_d <= #FFD SSX_pending;
        end
+   
    
    
    LOOP MX

@@ -29,8 +29,8 @@
 
 SWAP.GLOBAL MODEL_NAME AXI master stub
 
-VERIFY (DATA_BITS <= 64) ##stub supports 32 or 64 bits data bus
-VERIFY (SIZE_BITS <= 3) ##stub supports 32 or 64 bits data bus
+VERIFY (DATA_BITS in 32, 64) ##stub supports 32 or 64 bits data bus
+VERIFY (SIZE_BITS in 2, 3) ##stub supports 32 or 64 bits data bus
 
 GROUP STUB_AXI_A is {
     ID       ID_BITS                output
