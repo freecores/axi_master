@@ -27,6 +27,10 @@
 ////                                                             ////
 //////////////////////////////////////////////////////////////////##>
   
+VERIFY (DATA_BITS in 32, 64) ##stub supports 32 or 64 bits data bus
+VERIFY (SIZE_BITS in 2, 3) ##stub supports 32 or 64 bits data bus
+
+  
 SWAP.GLOBAL MODEL_NAME AXI interconnect fabric
 
 SWAP MSTRS MASTER_NUM
@@ -52,7 +56,7 @@ GROUP IC_AXI_A is {
     ID       ID_BITS                input  SON(CHANGE 1)
     ADDR     ADDR_BITS              input
     LEN      4                      input
-    SIZE     2                      input
+    SIZE     SIZE_BITS              input
     BURST    2                      input
     CACHE    4                      input
     PROT     3                      input

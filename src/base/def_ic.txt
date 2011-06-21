@@ -31,6 +31,8 @@ REQUIRE(1.4)
 
 INCLUDE def_ic_static.txt
 
+STARTUSER
+  
 SWAP.GLOBAL #FFD            #1                              ##flip-flop delay
 
 SWAP.USER PREFIX     fabric_MASTER_NUM_SLAVE_NUM     ##prefix for all module and file names
@@ -44,6 +46,8 @@ SWAP.USER SLV_DEPTH  8                               ##AXI slave command depth f
 SWAP.USER DATA_BITS 64                               ##AXI data bits
 SWAP.USER ADDR_BITS 32                               ##AXI address bits
 
+SWAP.USER SIZE_BITS  2                               ##AXI size bits
+  
 DEFINE.USER          DEF_DECERR_SLV                  ##use interanl decode slave error
   
 SWAP.USER USER_BITS  4                               ##AXI user bits

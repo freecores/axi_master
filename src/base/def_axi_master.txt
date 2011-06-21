@@ -31,6 +31,8 @@ REQUIRE(1.4)
 
 INCLUDE def_axi_master_static.txt
 
+STARTUSER
+  
 SWAP.GLOBAL #FFD #1                 ##Flip-Flop simulation delay
 
 SWAP.USER PREFIX      axi_master         ##prefix for all module and file names
