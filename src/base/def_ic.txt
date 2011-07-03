@@ -26,8 +26,7 @@
 //// details. http://www.gnu.org/licenses/lgpl.html              ////
 ////                                                             ////
 //////////////////////////////////////////////////////////////////##>
-
-REQUIRE(1.4)
+REQUIRE(1.5)
 
 INCLUDE def_ic_static.txt
 
@@ -57,16 +56,28 @@ SWAP.USER MSTR_ID_BITS    4                          ##AXI ID bits
 UNDEF.USER UNIQUE_ID                                 ##If defined all IDs must be unique, else bits will be added to slave IDs to identify masters
   
 
-GROUP.USER M0_ID is {                                ##Supported AXI IDs for master 0 (binary)
+GROUP.USER.TRUE(MASTER_NUM>0) M0_ID is {                                ##Supported AXI IDs for master 0 (binary)
   000
   001
 }
-GROUP.USER M1_ID is {                                ##Supported AXI IDs for master 1 (binary)
+GROUP.USER.TRUE(MASTER_NUM>1) M1_ID is {                                ##Supported AXI IDs for master 1 (binary)
   011
 }
-GROUP.USER M2_ID is {                                ##Supported AXI IDs for master 2 (binary)
+GROUP.USER.TRUE(MASTER_NUM>2) M2_ID is {                                ##Supported AXI IDs for master 2 (binary)
   000
   100
   101
 }
   
+GROUP.USER.TRUE(MASTER_NUM>3) M3_ID is {                                ##Supported AXI IDs for master 3 (binary)
+}  
+GROUP.USER.TRUE(MASTER_NUM>4) M4_ID is {                                ##Supported AXI IDs for master 4 (binary)
+} 
+GROUP.USER.TRUE(MASTER_NUM>5) M5_ID is {                                ##Supported AXI IDs for master 5 (binary)
+} 
+GROUP.USER.TRUE(MASTER_NUM>6) M6_ID is {                                ##Supported AXI IDs for master 6 (binary)
+} 
+GROUP.USER.TRUE(MASTER_NUM>7) M7_ID is {                                ##Supported AXI IDs for master 7 (binary)
+} 
+
+ 

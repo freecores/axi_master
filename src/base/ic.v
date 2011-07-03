@@ -1,4 +1,4 @@
-<##//////////////////////////////////////////////////////////////////
+/*///////////////////////////////////////////////////////////////////
 ////                                                             ////
 ////  Author: Eyal Hochberg                                      ////
 ////          eyal@provartec.com                                 ////
@@ -25,7 +25,7 @@
 //// PURPOSE.  See the GNU Lesser General Public License for more////
 //// details. http://www.gnu.org/licenses/lgpl.html              ////
 ////                                                             ////
-//////////////////////////////////////////////////////////////////##>
+///////////////////////////////////////////////////////////////////*/
 
 OUTFILE PREFIX_ic.v
 INCLUDE def_ic.txt
@@ -33,12 +33,11 @@ INCLUDE def_ic.txt
 ITER MX
 ITER SX SLAVE_NUM ##external slave ports don't include decerr slave
 
-VERIFY (GROUP_MMX_ID.NUM > 0) ##Master MX does not have group for AXI IDs
+VERIFY (GROUP_MMX_ID.NUM > 0) Master MX does not have any AXI IDs
   
-VERIFY(UNIQUE(GONCAT(GROUP_MMX_ID ,))) ##Master MX IDs are not unique
+VERIFY(UNIQUE(GONCAT(GROUP_MMX_ID ,))) Master MX IDs are not unique
 
 IF UNIQUE_ID VERIFY (UNIQUE(CONCAT(GONCAT(GROUP_MMX_ID ,) ,))) ##Masters IDs are not unique (Undefinig UNIQUE_ID will make IDs unique internally)
-
 
 module  PREFIX_ic (PORTS); 
 

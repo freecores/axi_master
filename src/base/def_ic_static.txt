@@ -30,6 +30,8 @@
 VERIFY (DATA_BITS in 32, 64) ##stub supports 32 or 64 bits data bus
 VERIFY (SIZE_BITS in 2, 3) ##stub supports 32 or 64 bits data bus
 
+VERIFY (MASTER_NUM in 1..8)
+VERIFY (SLAVE_NUM in 1..16)
   
 SWAP.GLOBAL MODEL_NAME AXI interconnect fabric
 
